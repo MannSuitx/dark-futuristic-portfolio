@@ -3,7 +3,7 @@ import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
 import ProjectsSection from "@/components/ProjectsSection";
 import ContactSection from "@/components/ContactSection";
-import { motion } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
 
 const Index = () => {
   useEffect(() => {
@@ -13,8 +13,22 @@ const Index = () => {
     };
   }, []);
 
+  // Add scroll progress indicator
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#1A1F2C]">
+      {/* Scroll Progress Indicator */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-blue-500 z-50 origin-left"
+        style={{ scaleX }}
+      />
+
       {/* Animated background elements */}
       <div className="fixed inset-0 z-0">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
@@ -23,12 +37,13 @@ const Index = () => {
       </div>
 
       {/* Grid background */}
-      <div className="fixed inset-0 z-0 opacity-[0.02]" 
-           style={{
-             backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)',
-             backgroundSize: '50px 50px'
-           }}>
-      </div>
+      <div 
+        className="fixed inset-0 z-0 opacity-[0.02]" 
+        style={{
+          backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)',
+          backgroundSize: '50px 50px'
+        }}
+      />
 
       {/* Content */}
       <motion.main 
@@ -37,10 +52,20 @@ const Index = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        <HeroSection />
-        <AboutSection />
-        <ProjectsSection />
-        <ContactSection />
+        <div className="snap-y snap-mandatory h-screen overflow-y-scroll">
+          <div className="snap-start h-screen">
+            <HeroSection />
+          </div>
+          <div className="snap-start h-screen">
+            <AboutSection />
+          </div>
+          <div className="snap-start min-h-screen">
+            <ProjectsSection />
+          </div>
+          <div className="snap-start h-screen">
+            <ContactSection />
+          </div>
+        </div>
       </motion.main>
     </div>
   );
