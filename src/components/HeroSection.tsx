@@ -44,7 +44,7 @@ const HeroSection = () => {
               transition={{ delay: 0.4 }}
               className="text-gray-400 text-xl max-w-2xl leading-relaxed"
             >
-              A passionate developer crafting digital experiences through code and creativity
+              A passionate creator dedicated to refining content and building dynamic digital experiences through expert editing and development.
             </motion.p>
             
             <motion.div 
@@ -54,7 +54,7 @@ const HeroSection = () => {
               className="flex gap-4 pt-4"
             >
               <a 
-                href="https://github.com" 
+                href="https://github.com/mannsuitx" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="p-3 bg-white/5 rounded-full hover:bg-white/10 transition-colors duration-300 border border-white/10"
@@ -62,7 +62,7 @@ const HeroSection = () => {
                 <Github className="w-6 h-6" />
               </a>
               <a 
-                href="https://linkedin.com" 
+                href="https://www.linkedin.com/in/mannatsuthar/" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="p-3 bg-white/5 rounded-full hover:bg-white/10 transition-colors duration-300 border border-white/10"
@@ -70,7 +70,7 @@ const HeroSection = () => {
                 <Linkedin className="w-6 h-6" />
               </a>
               <a 
-                href="mailto:contact@example.com" 
+                href="mailto:mannatsuthar150@gmail.com" 
                 className="p-3 bg-white/5 rounded-full hover:bg-white/10 transition-colors duration-300 border border-white/10"
               >
                 <Mail className="w-6 h-6" />
