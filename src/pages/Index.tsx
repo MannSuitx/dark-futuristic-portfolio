@@ -3,7 +3,7 @@ import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
 import ProjectsSection from "@/components/ProjectsSection";
 import ContactSection from "@/components/ContactSection";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { motion, useScroll, useSpring, useTransform, useMotionValue } from "framer-motion";
 
 const Index = () => {
   useEffect(() => {
@@ -21,6 +21,26 @@ const Index = () => {
     restDelta: 0.001
   });
 
+  // Smooth scroll value for parallax effects
+  const smoothScroll = useSpring(useMotionValue(0), {
+    damping: 15,
+    stiffness: 30
+  });
+
+  // Update smooth scroll value on scroll
+  useEffect(() => {
+    const updateSmoothScroll = () => {
+      smoothScroll.set(window.scrollY);
+    };
+    window.addEventListener("scroll", updateSmoothScroll);
+    return () => window.removeEventListener("scroll", updateSmoothScroll);
+  }, [smoothScroll]);
+
+  // Transform values for floating lights
+  const y1 = useTransform(smoothScroll, [0, 1000], [0, 400]);
+  const y2 = useTransform(smoothScroll, [0, 1000], [0, -400]);
+  const y3 = useTransform(smoothScroll, [0, 1000], [0, 600]);
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#1A1F2C]">
       {/* Scroll Progress Indicator */}
@@ -29,11 +49,20 @@ const Index = () => {
         style={{ scaleX }}
       />
 
-      {/* Animated background elements */}
+      {/* Animated background elements with parallax */}
       <div className="fixed inset-0 z-0">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-pink-500/20 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-2000"></div>
+        <motion.div 
+          className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-xl animate-pulse"
+          style={{ y: y1, x: useTransform(smoothScroll, [0, 1000], [0, 200]) }}
+        />
+        <motion.div 
+          className="absolute top-1/3 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full mix-blend-multiply filter blur-xl animate-pulse"
+          style={{ y: y2, x: useTransform(smoothScroll, [0, 1000], [0, -200]) }}
+        />
+        <motion.div 
+          className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-pink-500/20 rounded-full mix-blend-multiply filter blur-xl animate-pulse"
+          style={{ y: y3, x: useTransform(smoothScroll, [0, 1000], [0, 300]) }}
+        />
       </div>
 
       {/* Grid background */}
@@ -52,7 +81,16 @@ const Index = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        <div className="snap-y snap-mandatory h-screen overflow-y-scroll">
+        <div 
+          className="snap-y snap-mandatory h-screen overflow-y-scroll"
+          style={{
+            scrollBehavior: 'smooth',
+            scrollSnapType: 'y mandatory',
+            perspective: '1000px',
+            WebkitFontSmoothing: 'antialiased',
+            backfaceVisibility: 'hidden'
+          }}
+        >
           <div className="snap-start h-screen">
             <HeroSection />
           </div>
