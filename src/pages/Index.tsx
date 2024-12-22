@@ -13,33 +13,41 @@ const Index = () => {
     };
   }, []);
 
-  // Add scroll progress indicator
+  // Add scroll progress indicator with optimized spring settings
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
+    stiffness: 50, // Reduced from 100
+    damping: 20, // Reduced from 30
     restDelta: 0.001
   });
 
-  // Smooth scroll value for parallax effects
+  // Optimized smooth scroll value for parallax effects
   const smoothScroll = useSpring(useMotionValue(0), {
-    damping: 15,
-    stiffness: 30
+    damping: 20,
+    stiffness: 40,
+    mass: 0.5 // Added mass for smoother motion
   });
 
-  // Update smooth scroll value on scroll
+  // Optimized scroll event handler with requestAnimationFrame
   useEffect(() => {
+    let rafId: number;
     const updateSmoothScroll = () => {
-      smoothScroll.set(window.scrollY);
+      rafId = requestAnimationFrame(() => {
+        smoothScroll.set(window.scrollY);
+      });
     };
-    window.addEventListener("scroll", updateSmoothScroll);
-    return () => window.removeEventListener("scroll", updateSmoothScroll);
+    
+    window.addEventListener("scroll", updateSmoothScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", updateSmoothScroll);
+      cancelAnimationFrame(rafId);
+    };
   }, [smoothScroll]);
 
-  // Transform values for floating lights
-  const y1 = useTransform(smoothScroll, [0, 1000], [0, 400]);
-  const y2 = useTransform(smoothScroll, [0, 1000], [0, -400]);
-  const y3 = useTransform(smoothScroll, [0, 1000], [0, 600]);
+  // Optimized transform values with reduced range
+  const y1 = useTransform(smoothScroll, [0, 1000], [0, 200]);
+  const y2 = useTransform(smoothScroll, [0, 1000], [0, -200]);
+  const y3 = useTransform(smoothScroll, [0, 1000], [0, 300]);
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#1A1F2C]">
@@ -49,25 +57,37 @@ const Index = () => {
         style={{ scaleX }}
       />
 
-      {/* Animated background elements with parallax */}
-      <div className="fixed inset-0 z-0">
+      {/* Optimized animated background elements with reduced blur and opacity */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
         <motion.div 
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-xl animate-pulse"
-          style={{ y: y1, x: useTransform(smoothScroll, [0, 1000], [0, 200]) }}
+          className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-lg"
+          style={{ 
+            y: y1,
+            x: useTransform(smoothScroll, [0, 1000], [0, 100]),
+            willChange: 'transform'
+          }}
         />
         <motion.div 
-          className="absolute top-1/3 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full mix-blend-multiply filter blur-xl animate-pulse"
-          style={{ y: y2, x: useTransform(smoothScroll, [0, 1000], [0, -200]) }}
+          className="absolute top-1/3 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full mix-blend-multiply filter blur-lg"
+          style={{ 
+            y: y2,
+            x: useTransform(smoothScroll, [0, 1000], [0, -100]),
+            willChange: 'transform'
+          }}
         />
         <motion.div 
-          className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-pink-500/20 rounded-full mix-blend-multiply filter blur-xl animate-pulse"
-          style={{ y: y3, x: useTransform(smoothScroll, [0, 1000], [0, 300]) }}
+          className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-pink-500/10 rounded-full mix-blend-multiply filter blur-lg"
+          style={{ 
+            y: y3,
+            x: useTransform(smoothScroll, [0, 1000], [0, 150]),
+            willChange: 'transform'
+          }}
         />
       </div>
 
-      {/* Grid background */}
+      {/* Optimized grid background with reduced opacity */}
       <div 
-        className="fixed inset-0 z-0 opacity-[0.02]" 
+        className="fixed inset-0 z-0 opacity-[0.02] pointer-events-none" 
         style={{
           backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)',
           backgroundSize: '50px 50px'
